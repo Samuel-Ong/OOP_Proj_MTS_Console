@@ -40,299 +40,40 @@ namespace Movie_Ticketing_System
                 new Screening(new DateTime(2017, 02, 02, 15, 00, 00), "2D", cinemaHallList[1], movieList[3])
             };
 
+            List<Order> orderList = new List<Order>();
 
-
+            List<List<string>> movieCommentList = new List<List<string>>() { new List<string>(), new List<string>(), new List<string>(), new List<string>() };
+            List<double> movieRatingList = new List<double>() { 0, 0, 0, 0};
             while (true)
             {
                 Menu();
-                int option, movieindex, cinemahallindex, movieChosen, noticket, movieNoReview, rating;
+                int option;
                 try { option = Convert.ToInt32(Console.ReadLine()); }
                 catch (Exception e) { Console.WriteLine("Invalid input"); continue; }
                 switch (option)
                 {
                     case 1:
-                        Console.WriteLine();
-                        Console.WriteLine("Option1. List All Movies");
+                        Console.WriteLine("\nOption1. List All Movies\n");
                         DisplayAllMovies(movieList);
                         Console.WriteLine();
                         break;
                     case 2:
-                        while (true)
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Option 2. Add Movie Screening");
-                            DisplayAllCinemaHall(cinemaHallList);
-                            Console.Write("Select a cinema hall: ");
-                            try { cinemahallindex = Convert.ToInt32(Console.ReadLine()) - 1; }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Cinema Hall Only");
-                                continue;
-                            }
-                            if (0 > cinemahallindex || cinemahallindex >= cinemaHallList.Count)
-                            {
-                                Console.WriteLine("Invalid Cinema Hall");
-                                continue;
-                            }
-
-                            Console.WriteLine();
-                            DisplayAllMovies(movieList);
-                            Console.Write("Select a movie: ");
-                            try { movieindex = Convert.ToInt32(Console.ReadLine()) - 1; }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("MovieNo Only");
-                                continue;
-                            };
-                            if (0 > movieindex || movieindex >= movieList.Count)
-                            {
-                                Console.WriteLine("Invalid Movie");
-                                continue;
-                            }
-
-                            Console.Write("\nSelect a screening type [2D/3D]: ");
-                            string Type = Console.ReadLine();
-                            if (Type != "2D" && Type != "3D")
-                            {
-                                Console.WriteLine("Invalid Screening Type");
-                                continue;
-                            }
-
-                            Console.Write("Enter a screening date and time [e.g. 01/01/2017 18:59](24 Hour format): ");
-                            DateTime Sdatetime;
-                            try { Sdatetime = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture); }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Invalid Input");
-                                continue;
-                            }
-
-                            Screening s = new Screening(Sdatetime, Type, cinemaHallList[cinemahallindex], movieList[movieindex]);
-                            screeningList.Add(s);
-                            Console.WriteLine("Movie screening successfully created.");
-                            break;
-                        }
+                        AddMovieScreening(movieList, screeningList, cinemaHallList);
                         break;
                     case 3:
-                        while (true)
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Option3.List Movie Screenings");
-                            Console.WriteLine();
-                            DisplayAllMovies(movieList);
-                            Console.Write("Select a movie: ");
-                            try { movieChosen = Convert.ToInt32(Console.ReadLine()) - 1; }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Invalid Input");
-                                continue;
-                            }
-                            if (0 > movieChosen || movieChosen >= movieList.Count)
-                            {
-                                Console.WriteLine("Invalid Movie");
-                                continue;
-                            }
-                            Console.WriteLine();
-                            Console.WriteLine("{0,-15}{1,-6}{2,-25}{3}", "Location", "Type", "Date/Time", "Seats Remaining");
-                            foreach (Screening s in screeningList)
-                            {
-                                if (s.Movie.Title == movieList[movieChosen].Title)
-                                {
-                                    Console.WriteLine("{0,-15}{1,-6}{2,-25}{3}", s.CinemaHall.Name, s.ScreeningType, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture), s.SeatsRemaining);
-                                }
-                            }
-                            Console.WriteLine();
-                            break;
-                        }
+                        ListMovieScreenings(movieList, screeningList);
                         break;
                     case 4:
-                        List<string> screennoList = new List<string>();
-                        while (true)
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Option4.Delete Movie Screening");
-                            Console.WriteLine();
-                            Console.WriteLine("{0,-6}{1,-15}{2,-8}{3,-30}{4}", "No", "Location", "Hall No", "Title", "Date/Time");
-                            foreach (Screening s in screeningList)
-                            {
-                                if (s.SeatsRemaining == s.CinemaHall.Capacity)
-                                {
-                                    screennoList.Add(s.ScreeningNo);
-                                    Console.WriteLine("{0,-6}{1,-15}{2,-8}{3,-30}{4}", s.ScreeningNo, s.CinemaHall.Name, s.CinemaHall.HallNo, s.Movie.Title, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture));
-                                }
-                            }
-                            Console.Write("Enter a screening number to delete: ");
-                            string screenno = Console.ReadLine();
-                            int e;
-                            if (!int.TryParse(screenno, out e))
-                            {
-                                Console.WriteLine("Invalid Input");
-                                continue;
-                            }
-                            if (screennoList.Contains(screenno))
-                            {
-                                screeningList.RemoveAt(screennoList.IndexOf(screenno));
-                                Console.WriteLine("Screening Deleted");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Invalid Screening");
-                                continue;
-                            }
-                            Console.WriteLine();
-                            break;
-                        }
+                        DeleteMovieScreening(movieList, screeningList);
                         break;
                     case 5:
-                        //List<Ticket> ticketList = new List<Ticket>();
-                        while (true)
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Option5. Order Movie Tickets");
-                            Console.WriteLine();
-                            DisplayAllMovies(movieList);
-                            Console.Write("Select a movie: ");
-                            try { movieChosen = Convert.ToInt32(Console.ReadLine()) - 1; }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Invalid Input");
-                                continue;
-                            }
-                            if (0 > movieChosen || movieChosen >= movieList.Count)
-                            {
-                                Console.WriteLine("Invalid Movie");
-                                continue;
-                            }
-                            Console.WriteLine();
-                            Console.WriteLine("{0,-15}{1,-6}{2,-25}{3}", "Location", "Type", "Date/Time", "Seats Remaining");
-                            foreach (Screening s in screeningList)
-                            {
-                                if (s.Movie.Title == movieList[movieChosen].Title)
-                                {
-                                    Console.WriteLine("{0,-7}{1,-15}{2,-6}{3,-25}{4}", s.ScreeningNo, s.CinemaHall.Name, s.ScreeningType, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture), s.SeatsRemaining);
-                                }
-                            }
-                            Console.Write("Select a session: ");
-                            int screenno;
-                            try { screenno = Convert.ToInt32(Console.ReadLine()); }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Invalid Screening");
-                                continue;
-                            }
-                            Console.Write("Please enter number of tickets you wish to purchase: ");
-                            try { noticket = Convert.ToInt32(Console.ReadLine()); }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Invalid No. of tickets");
-                                continue;
-                            }
-                            Console.Write("The movie classification is " + movieList[movieChosen].Classification + ". Does every ticket holder meet the age requirements [Y/N]? ");
-                            string requirements = Console.ReadLine();
-                            if (requirements != "Y" || requirements != "N")
-                            {
-                                Console.WriteLine("Invalid Response");
-                                continue;
-                            }
-                            if (requirements == "N")
-                            {
-                                Console.WriteLine("Unable to order tickets from this movie. Try another movie.");
-                                continue;
-                            }
-
-                            for (int i = 0; i < noticket; i++)
-                            {
-                                Console.WriteLine("Ticket #" + i + 1);
-                                Console.Write("Type of ticket to purchase [Student/Senior/Adult]: ");
-                                string cat = Console.ReadLine();
-                                if (cat == "Senior")
-                                {
-                                    Console.Write("Please enter year of birth [YYYY]: ");
-                                    DateTime YOB;
-                                    try { YOB = DateTime.ParseExact(Console.ReadLine(), "yyyy", CultureInfo.InvariantCulture); }
-                                    catch (Exception e)
-                                    {
-                                        Console.WriteLine("Invalid Year Of Birth");
-                                        continue;
-                                    }
-                                    //Difference between this year and YOB must be more than or equals to 55
-
-
-
-                                }
-                            }
-                            Console.WriteLine();
-                            break;
-                        }
+                            OrderTicket(movieList, screeningList);
                         break;
-
                     case 6:
-                        while (true)
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Option 6. Add Movie Rating");
-                            Console.WriteLine();
-                            DisplayAllMovies(movieList);
-                            Console.WriteLine();
-                            Console.Write("Enter a movie number to review the movie: ");
-                            try { movieNoReview = Convert.ToInt32(Console.ReadLine()) - 1; }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Invalid Input");
-                                continue;
-                            }
-                            if (0 > movieNoReview || movieNoReview >= movieList.Count)
-                            {
-                                Console.WriteLine("Invalid Movie");
-                                continue;
-                            }
-
-                            Console.WriteLine();
-                            Console.Write("Please enter a rating [0=Very bad; 5=Very good]: ");
-                            try { rating = Convert.ToInt32(Console.ReadLine()); }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Please Enter the rating number");
-                                continue;
-                            }
-                            if (rating < 0 || rating > 5)
-                            {
-                                Console.WriteLine("Please enter a rating from 0 to 5 only");
-                                continue;
-                            }
-                            Console.Write("Please enter comments abot the movie: ");
-                            string comments = Console.ReadLine();
-                            //Add the comment to a list for individual movies
-                            Console.WriteLine();
-                            Console.WriteLine("Thank you for your submission");
-                            //The new rating idk how do
-                            break;
-                        }
+                        AddMovieRating(movieList, movieCommentList, movieRatingList);
                         break;
-
                     case 7:
-                        while (true)
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Option 7. View Movie Ratings and Comments");
-                            Console.WriteLine();
-                            DisplayAllMovies(movieList);
-                            Console.WriteLine();
-                            Console.Write("Enter a movie number to review the movie: ");
-                            try { movieNoReview = Convert.ToInt32(Console.ReadLine()) - 1; }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Invalid Input");
-                                continue;
-                            }
-                            if (0 > movieNoReview || movieNoReview >= movieList.Count)
-                            {
-                                Console.WriteLine("Invalid Movie");
-                                continue;
-                            }
-                            //The rating for the movie is...
-                            //Comments
-                        }
+                        ViewRatingComment(movieList, movieCommentList, movieRatingList);
                         break;
                     case 0:
                         return;
@@ -394,6 +135,373 @@ Enter your option:");
             for (int i = 0; i < screeningList.Count; i++)
             {
                 Console.WriteLine("{0,-6}{1,-15}{2,-10}{3,-30}{4}", i + 1001, screeningList[i].CinemaHall.Name, screeningList[i].CinemaHall.HallNo, screeningList[i].Movie.Title, screeningList[i].ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture));
+            }
+        }
+
+        static void AddMovieScreening(List<Movie> movieList, List<Screening> screeningList, List<CinemaHall> cinemaHallList)
+        {
+            while (true)
+            {
+                int cinemahallindex, movieindex;
+                Console.WriteLine("\nOption 2. Add Movie Screening\n");
+                DisplayAllCinemaHall(cinemaHallList);
+                Console.Write("Select a cinema hall: ");
+                try { cinemahallindex = Convert.ToInt32(Console.ReadLine()) - 1; }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Cinema Hall Only");
+                    continue;
+                }
+                if (0 > cinemahallindex || cinemahallindex >= cinemaHallList.Count)
+                {
+                    Console.WriteLine("Invalid Cinema Hall");
+                    continue;
+                }
+
+                Console.WriteLine();
+                DisplayAllMovies(movieList);
+                Console.Write("Select a movie: ");
+                try { movieindex = Convert.ToInt32(Console.ReadLine()) - 1; }
+                catch (Exception e)
+                {
+                    Console.WriteLine("MovieNo Only");
+                    continue;
+                };
+                if (0 > movieindex || movieindex >= movieList.Count)
+                {
+                    Console.WriteLine("Invalid Movie");
+                    continue;
+                }
+
+                Console.Write("\nSelect a screening type [2D/3D]: ");
+                string Type = Console.ReadLine();
+                if (Type != "2D" && Type != "3D")
+                {
+                    Console.WriteLine("Invalid Screening Type");
+                    continue;
+                }
+
+                Console.Write("Enter a screening date and time [e.g. 01/01/2017 18:59](24 Hour format): ");
+                DateTime Sdatetime;
+                try { Sdatetime = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture); }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid Input");
+                    continue;
+                }
+
+                Screening s = new Screening(Sdatetime, Type, cinemaHallList[cinemahallindex], movieList[movieindex]);
+                screeningList.Add(s);
+                Console.WriteLine("Movie screening successfully created.");
+                break;
+            }
+        }
+
+        static void ListMovieScreenings(List<Movie> movieList, List<Screening> screeningList)
+        {
+            while (true)
+            {
+                int movieChosen;
+                Console.WriteLine("\nOption3.List Movie Screenings\n");
+                DisplayAllMovies(movieList);
+                Console.Write("Select a movie: ");
+                try { movieChosen = Convert.ToInt32(Console.ReadLine()) - 1; }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid Input");
+                    continue;
+                }
+                if (0 > movieChosen || movieChosen >= movieList.Count)
+                {
+                    Console.WriteLine("Invalid Movie");
+                    continue;
+                }
+                Console.WriteLine();
+                Console.WriteLine("{0,-15}{1,-6}{2,-25}{3}", "Location", "Type", "Date/Time", "Seats Remaining");
+                bool found = false;
+                foreach (Screening s in screeningList)
+                {
+                    if (s.Movie.Title == movieList[movieChosen].Title)
+                    {
+                        Console.WriteLine("{0,-15}{1,-6}{2,-25}{3}", s.CinemaHall.Name, s.ScreeningType, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture), s.SeatsRemaining);
+                        found = true;
+                    }
+                }
+                if (found == false)
+                {
+                    Console.WriteLine("No screenings available");
+                    break;
+                }
+                Console.WriteLine();
+                break;
+            }
+        }
+
+        static void DeleteMovieScreening(List<Movie> movieList, List<Screening> screeningList)
+        {
+            while (true)
+            {
+                List<string> screennoList = new List<string>();
+                Console.WriteLine("\nOption4.Delete Movie Screening\n");
+                Console.WriteLine("{0,-6}{1,-15}{2,-8}{3,-30}{4}", "No", "Location", "Hall No", "Title", "Date/Time");
+                foreach (Screening s in screeningList)
+                {
+                    if (s.SeatsRemaining == s.CinemaHall.Capacity)
+                    {
+                        screennoList.Add(s.ScreeningNo);
+                        Console.WriteLine("{0,-6}{1,-15}{2,-8}{3,-30}{4}", s.ScreeningNo, s.CinemaHall.Name, s.CinemaHall.HallNo, s.Movie.Title, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture));
+                    }
+                }
+                Console.Write("Enter a screening number to delete: ");
+                string screenno = Console.ReadLine();
+                int temp;
+                if (!int.TryParse(screenno, out temp))
+                {
+                    Console.WriteLine("Invalid Session");
+                }
+                if (screennoList.Contains(screenno))
+                {
+                    screeningList.RemoveAt(screennoList.IndexOf(screenno));
+                    Console.WriteLine("Screening Deleted");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Screening");
+                    continue;
+                }
+                Console.WriteLine();
+                break;
+            }
+        }
+
+        static void OrderTicket(List<Movie> movieList, List<Screening> screeningList)
+        {
+            while (true)
+            {
+                int movieChosen, noticket;
+                List<string> screennoList = new List<string>();
+                List<Ticket> ticketList = new List<Ticket>();
+                Screening screening;
+                //Movie
+                Console.WriteLine("\nOption5. Order Movie Tickets\n");
+                DisplayAllMovies(movieList);
+                Console.Write("Select a movie: ");
+                try { movieChosen = Convert.ToInt32(Console.ReadLine()) - 1; }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid Input");
+                    continue;
+                }
+                if (0 > movieChosen || movieChosen >= movieList.Count)
+                {
+                    Console.WriteLine("Invalid Movie");
+                    continue;
+                }
+
+                //Screening
+                Console.WriteLine("\n{0,-15}{1,-6}{2,-25}{3}", "Location", "Type", "Date/Time", "Seats Remaining");
+                bool found = false;
+                foreach (Screening s in screeningList)
+                {
+                    if (s.Movie.Title == movieList[movieChosen].Title)
+                    {
+                        Console.WriteLine("{0,-7}{1,-15}{2,-6}{3,-25}{4}", s.ScreeningNo, s.CinemaHall.Name, s.ScreeningType, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture), s.SeatsRemaining);
+                        if (s.SeatsRemaining > 0)
+                        {
+                            screennoList.Add(s.ScreeningNo);
+                            found = true;
+                        }
+                    }
+                }
+                if (found == false)
+                {
+                    Console.WriteLine("No screenings available");
+                    continue;
+                }
+                Console.Write("Select a session: ");
+                string screenno = Console.ReadLine();
+                int temp;
+                if (!int.TryParse(screenno, out temp))
+                {
+                    Console.WriteLine("Invalid Session");
+                    continue;
+                }
+                if (!screennoList.Contains(screenno))
+                {
+                    Console.WriteLine("Invalid Screening");
+                    continue;
+                }
+                else { screening = screeningList[screennoList.IndexOf(screenno)]; }
+
+                //Ticket
+                Console.Write("Please enter number of tickets you wish to purchase: ");
+                try { noticket = Convert.ToInt32(Console.ReadLine()); }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid input");
+                    continue;
+                }
+                Console.Write("The movie classification is " + movieList[movieChosen].Classification + ". Does every ticket holder meet the age requirements [Y/N]? ");
+                string requirements = Console.ReadLine();
+                if (requirements != "Y" && requirements != "N")
+                {
+                    Console.WriteLine("Invalid Response");
+                    continue;
+                }
+                if (requirements == "N")
+                {
+                    Console.WriteLine("Unable to order tickets from this movie. Try another movie.");
+                    continue;
+                }
+
+                for (int i = 0; i < noticket; i++)
+                {
+                    while (true)
+                    {
+                        Console.WriteLine("Ticket #{0}", i + 1);
+                        Console.Write("Type of ticket to purchase [Student/Senior/Adult]: ");
+                        string cat = Console.ReadLine();
+                        if (cat == "Senior")
+                        {
+                            SeniorTicket(ticketList, screening, i + 1);
+                        }
+                        else if (cat == "Student")
+                        {
+                            StudentTicket(ticketList, screening, i + 1);
+                        }
+                        else if (cat == "Adult")
+                        {
+                            AdultTicket(ticketList, screening, i + 1);
+                        }
+                        else { Console.WriteLine("Invalid option");  continue; }
+                        Console.WriteLine();
+                        break;
+                    }
+                }
+                Console.WriteLine();
+                break;
+            }
+        }
+
+        static void SeniorTicket(List<Ticket> ticketList, Screening screening, int ticketno)
+        {
+            while (true)
+            {
+                Console.Write("Please enter year of birth [YYYY]: ");
+                DateTime YOB;
+                try { YOB = DateTime.ParseExact(Console.ReadLine(), "yyyy", CultureInfo.InvariantCulture); }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid Year Of Birth");
+                    continue;
+                }
+                if (DateTime.Today.Year - YOB.Year < 55)
+                {
+                    Console.WriteLine("Only ages 55 and above are considered Elderly\nYou'll be considered as an Adult");
+                    AdultTicket(ticketList, screening, ticketno);
+                    break;
+                }
+                ticketList.Add(new SeniorCitizen(screening, YOB.Year));
+                Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
+                break;
+            }
+        }
+
+        static void StudentTicket(List<Ticket> ticketList, Screening screening, int ticketno)
+        {
+            while (true)
+            {
+                Console.Write("Please enter the level of study[Primary/Secondary/Teriary]: ");
+                string levelofStudy = Console.ReadLine();
+                if (!new List<string>() { "Primary", "Secondary", "Teriary"}.Contains(levelofStudy)) { Console.WriteLine("Invalid level of study"); continue; }
+                ticketList.Add(new Student(screening, levelofStudy));
+                Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
+                break;
+            }
+        }
+
+        static void AdultTicket(List<Ticket> ticketList, Screening screening, int ticketno)
+        {
+            while (true)
+            {
+                bool buyPopcorn = false;
+                Console.Write("You're entitled to a $3 discount off the Popcorn Set.\n Do you want to purchase the Popcorn Set? [Y/N] ");
+                string userinput = Console.ReadLine();
+                if ( userinput == "Y") { buyPopcorn = true; }
+                else if (userinput != "N") { Console.WriteLine("Invalid input"); continue; }
+                ticketList.Add(new Adult(screening, buyPopcorn));
+                Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
+                break;
+            }
+        }
+
+        static void AddMovieRating(List<Movie> movieList, List<List<string>> movieCommentList, List<double> movieRatingList)
+        {
+            while (true)
+            {
+                int movieNo, rating;
+                Console.WriteLine("\nOption 6. Add Movie Rating\n");
+                DisplayAllMovies(movieList);
+                Console.Write("\nEnter a movie number to review the movie: ");
+                try { movieNo = Convert.ToInt32(Console.ReadLine()) - 1; }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid Input");
+                    continue;
+                }
+                if (0 > movieNo || movieNo >= movieList.Count)
+                {
+                    Console.WriteLine("Invalid Movie");
+                    continue;
+                }
+
+                Console.Write("\nPlease enter a rating [0=Very bad; 5=Very good]: ");
+                try { rating = Convert.ToInt32(Console.ReadLine()); }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Please enter the rating number");
+                    continue;
+                }
+                if (rating < 0 || rating > 5)
+                {
+                    Console.WriteLine("Please enter a rating from 0 to 5 only");
+                    continue;
+                }
+                Console.Write("Please enter comments about the movie: ");
+                movieRatingList[movieNo] = (movieRatingList[movieNo] * movieCommentList[movieNo].Count() + rating) / (movieCommentList[movieNo].Count() + 1);
+                movieCommentList[movieNo].Add(Console.ReadLine());
+                Console.WriteLine("\nThank you for your submission");
+                break;
+            }
+        }
+        
+        static void ViewRatingComment(List<Movie> movieList, List<List<string>> movieCommentList, List<double> movieRatingList)
+        {
+            while (true)
+            {
+                int movieNo;
+                Console.WriteLine("\nOption 7. View Movie Ratings and Comments\n");
+                DisplayAllMovies(movieList);
+                Console.WriteLine();
+                Console.Write("Enter a movie number to review the movie: ");
+                try { movieNo = Convert.ToInt32(Console.ReadLine()) - 1; }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid Input");
+                    continue;
+                }
+                if (0 > movieNo || movieNo >= movieList.Count)
+                {
+                    Console.WriteLine("Invalid Movie");
+                    continue;
+                }
+                Console.WriteLine("The rating for {0} is {1}", movieList[movieNo].Title, movieRatingList[movieNo]);
+                for (int i = 0; i < movieCommentList[movieNo].Count; i++)
+                {
+                    Console.WriteLine("Comment #{0} : {1}", i + 1, movieCommentList[movieNo][i]);
+                }
+                Console.WriteLine();
+                break;
             }
         }
     }
