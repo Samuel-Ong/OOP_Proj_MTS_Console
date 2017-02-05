@@ -45,7 +45,7 @@ namespace Movie_Ticketing_System
             while (true)
             {
                 Menu();
-                int option;
+                int option, movieindex, cinemahallindex, movieChosen, noticket, movieNoReview, rating;
                 try { option = Convert.ToInt32(Console.ReadLine()); }
                 catch (Exception e) { Console.WriteLine("Invalid input"); continue; }
                 switch (option)
@@ -57,8 +57,6 @@ namespace Movie_Ticketing_System
                         Console.WriteLine();
                         break;
                     case 2:
-
-                        int movieindex, cinemahallindex;
                         while (true)
                         {
                             Console.WriteLine();
@@ -116,7 +114,6 @@ namespace Movie_Ticketing_System
                         }
                         break;
                     case 3:
-                        int movieChosen;
                         while (true)
                         {
                             Console.WriteLine();
@@ -184,6 +181,157 @@ namespace Movie_Ticketing_System
                             }
                             Console.WriteLine();
                             break;
+                        }
+                        break;
+                    case 5:
+                        //List<Ticket> ticketList = new List<Ticket>();
+                        while (true)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("Option5. Order Movie Tickets");
+                            Console.WriteLine();
+                            DisplayAllMovies(movieList);
+                            Console.Write("Select a movie: ");
+                            try { movieChosen = Convert.ToInt32(Console.ReadLine()) - 1; }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Invalid Input");
+                                continue;
+                            }
+                            if (0 > movieChosen || movieChosen >= movieList.Count)
+                            {
+                                Console.WriteLine("Invalid Movie");
+                                continue;
+                            }
+                            Console.WriteLine();
+                            Console.WriteLine("{0,-15}{1,-6}{2,-25}{3}", "Location", "Type", "Date/Time", "Seats Remaining");
+                            foreach (Screening s in screeningList)
+                            {
+                                if (s.Movie.Title == movieList[movieChosen].Title)
+                                {
+                                    Console.WriteLine("{0,-7}{1,-15}{2,-6}{3,-25}{4}", s.ScreeningNo, s.CinemaHall.Name, s.ScreeningType, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture), s.SeatsRemaining);
+                                }
+                            }
+                            Console.Write("Select a session: ");
+                            int screenno;
+                            try { screenno = Convert.ToInt32(Console.ReadLine()); }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Invalid Screening");
+                                continue;
+                            }
+                            Console.Write("Please enter number of tickets you wish to purchase: ");
+                            try { noticket = Convert.ToInt32(Console.ReadLine()); }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Invalid No. of tickets");
+                                continue;
+                            }
+                            Console.Write("The movie classification is " + movieList[movieChosen].Classification + ". Does every ticket holder meet the age requirements [Y/N]? ");
+                            string requirements = Console.ReadLine();
+                            if (requirements != "Y" || requirements != "N")
+                            {
+                                Console.WriteLine("Invalid Response");
+                                continue;
+                            }
+                            if (requirements == "N")
+                            {
+                                Console.WriteLine("Unable to order tickets from this movie. Try another movie.");
+                                continue;
+                            }
+
+                            for (int i = 0; i < noticket; i++)
+                            {
+                                Console.WriteLine("Ticket #" + i + 1);
+                                Console.Write("Type of ticket to purchase [Student/Senior/Adult]: ");
+                                string cat = Console.ReadLine();
+                                if (cat == "Senior")
+                                {
+                                    Console.Write("Please enter year of birth [YYYY]: ");
+                                    DateTime YOB;
+                                    try { YOB = DateTime.ParseExact(Console.ReadLine(), "yyyy", CultureInfo.InvariantCulture); }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine("Invalid Year Of Birth");
+                                        continue;
+                                    }
+                                    //Difference between this year and YOB must be more than or equals to 55
+
+
+
+                                }
+                            }
+                            Console.WriteLine();
+                            break;
+                        }
+                        break;
+
+                    case 6:
+                        while (true)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("Option 6. Add Movie Rating");
+                            Console.WriteLine();
+                            DisplayAllMovies(movieList);
+                            Console.WriteLine();
+                            Console.Write("Enter a movie number to review the movie: ");
+                            try { movieNoReview = Convert.ToInt32(Console.ReadLine()) - 1; }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Invalid Input");
+                                continue;
+                            }
+                            if (0 > movieNoReview || movieNoReview >= movieList.Count)
+                            {
+                                Console.WriteLine("Invalid Movie");
+                                continue;
+                            }
+
+                            Console.WriteLine();
+                            Console.Write("Please enter a rating [0=Very bad; 5=Very good]: ");
+                            try { rating = Convert.ToInt32(Console.ReadLine()); }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Please Enter the rating number");
+                                continue;
+                            }
+                            if (rating < 0 || rating > 5)
+                            {
+                                Console.WriteLine("Please enter a rating from 0 to 5 only");
+                                continue;
+                            }
+                            Console.Write("Please enter comments abot the movie: ");
+                            string comments = Console.ReadLine();
+                            //Add the comment to a list for individual movies
+                            Console.WriteLine();
+                            Console.WriteLine("Thank you for your submission");
+                            //The new rating idk how do
+                            break;
+                        }
+                        break;
+
+                    case 7:
+                        while (true)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("Option 7. View Movie Ratings and Comments");
+                            Console.WriteLine();
+                            DisplayAllMovies(movieList);
+                            Console.WriteLine();
+                            Console.Write("Enter a movie number to review the movie: ");
+                            try { movieNoReview = Convert.ToInt32(Console.ReadLine()) - 1; }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Invalid Input");
+                                continue;
+                            }
+                            if (0 > movieNoReview || movieNoReview >= movieList.Count)
+                            {
+                                Console.WriteLine("Invalid Movie");
+                                continue;
+                            }
+                            //The rating for the movie is...
+                            //Comments
                         }
                         break;
                     case 0:
