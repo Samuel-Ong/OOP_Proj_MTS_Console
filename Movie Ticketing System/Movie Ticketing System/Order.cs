@@ -12,16 +12,28 @@ namespace Movie_Ticketing_System
     class Order
     {
         private int orderCount { get; set; } = 1;
+        private string status;
         public string OrderNo { get; set; }
-        public DateTime OrderDateTime { get; set; }
-        public double Amount { get; set; }
-        public string Status { get; set; }
+        public DateTime OrderDateTime { get; set; } = DateTime.Today;
+        public double Amount { get; set; } = 0;
+        public string Status
+        {
+            get { return status; }
+            set
+            {
+                if (new List<string>() { "Unpaid", "Paid"}.Contains(value))
+                {
+                    status = value;
+                }
+            }
+        }
         private List<Ticket> TicketList = new List<Ticket>();
 
         public Order() { OrderNo = Convert.ToString(orderCount); orderCount++; }
         public void AddTicket(Ticket ticket)
         {
             TicketList.Add(ticket);
+            Amount += ticket.CalculatePrice();
         }
         public List<Ticket> GetTicketList()
         {

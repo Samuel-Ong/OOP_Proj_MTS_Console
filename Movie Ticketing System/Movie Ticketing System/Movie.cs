@@ -41,7 +41,7 @@ namespace Movie_Ticketing_System
             {
                 genrelist += ", " + GenreList[i];
             }
-            return String.Format("{0,-35}{1,-9}{2,-20}{3,-14}{4}{5}", Title, Duration, Classification, OpeningDate, genrelist);
+            return String.Format("{0,-35}{1,-9}{2,-20}{3,-14}{4}{5}", Title, Duration, Classification, OpeningDate, genrelist, Rating);
         }
     }
 }

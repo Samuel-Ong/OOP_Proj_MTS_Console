@@ -41,6 +41,11 @@ namespace Movie_Ticketing_System
                 new Screening(new DateTime(2017, 01, 31, 19, 00, 00), "3D", cinemaHallList[0], movieList[3]),
                 new Screening(new DateTime(2017, 02, 02, 15, 00, 00), "2D", cinemaHallList[1], movieList[3])
             };
+            List<string> screennoList = new List<string>();
+            foreach (Screening s in screeningList)
+            {
+                screennoList.Add(s.ScreeningNo);
+            }
 
             List<Order> orderList = new List<Order>();
             while (true)
@@ -63,10 +68,10 @@ namespace Movie_Ticketing_System
                         ListMovieScreenings(movieList, screeningList);
                         break;
                     case 4:
-                        DeleteMovieScreening(movieList, screeningList);
+                        DeleteMovieScreening(movieList, screeningList, screennoList);
                         break;
                     case 5:
-                            OrderTicket(movieList, screeningList);
+                        OrderTicket(movieList, screeningList, orderList, screennoList);
                         break;
                     case 6:
                         AddMovieRating(movieList);
@@ -236,11 +241,10 @@ Enter your option:");
             }
         }
 
-        static void DeleteMovieScreening(List<Movie> movieList, List<Screening> screeningList)
+        static void DeleteMovieScreening(List<Movie> movieList, List<Screening> screeningList, List<string> screennoList)
         {
             while (true)
             {
-                List<string> screennoList = new List<string>();
                 Console.WriteLine("\nOption4.Delete Movie Screening\n");
                 Console.WriteLine("{0,-6}{1,-15}{2,-8}{3,-30}{4}", "No", "Location", "Hall No", "Title", "Date/Time");
                 foreach (Screening s in screeningList)
@@ -273,12 +277,11 @@ Enter your option:");
             }
         }
 
-        static void OrderTicket(List<Movie> movieList, List<Screening> screeningList)
+        static void OrderTicket(List<Movie> movieList, List<Screening> screeningList, List<Order> orderList, List<string> screennoList)
         {
             while (true)
             {
                 int movieChosen, noticket;
-                List<string> screennoList = new List<string>();
                 List<Ticket> ticketList = new List<Ticket>();
                 Screening screening;
                 //Movie
@@ -304,10 +307,9 @@ Enter your option:");
                 {
                     if (s.Movie.Title == movieList[movieChosen].Title)
                     {
-                        Console.WriteLine("{0,-7}{1,-15}{2,-6}{3,-25}{4}", s.ScreeningNo, s.CinemaHall.Name, s.ScreeningType, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture), s.SeatsRemaining);
                         if (s.SeatsRemaining > 0)
                         {
-                            screennoList.Add(s.ScreeningNo);
+                            Console.WriteLine("{0,-7}{1,-15}{2,-6}{3,-25}{4}", s.ScreeningNo, s.CinemaHall.Name, s.ScreeningType, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture), s.SeatsRemaining);
                             found = true;
                         }
                     }
@@ -353,6 +355,7 @@ Enter your option:");
                     continue;
                 }
 
+                Order CurrOrder = new Order();
                 for (int i = 0; i < noticket; i++)
                 {
                     while (true)
@@ -362,27 +365,29 @@ Enter your option:");
                         string cat = Console.ReadLine();
                         if (cat == "Senior")
                         {
-                            SeniorTicket(ticketList, screening, i + 1);
+                            SeniorTicket(CurrOrder, screening, i + 1);
                         }
                         else if (cat == "Student")
                         {
-                            StudentTicket(ticketList, screening, i + 1);
+                            StudentTicket(CurrOrder, screening, i + 1);
                         }
                         else if (cat == "Adult")
                         {
-                            AdultTicket(ticketList, screening, i + 1);
+                            AdultTicket(CurrOrder, screening, i + 1);
                         }
-                        else { Console.WriteLine("Invalid option");  continue; }
+                        else { Console.WriteLine("Invalid option"); continue; }
                         Console.WriteLine();
                         break;
                     }
                 }
-                Console.WriteLine();
+                Console.Write("Order #{0}\n=========\nMovie Title: {1}\nCinema: {2}\nHall: {3}\nDate/Time: {4}\n\nTotal: ${5:0.00}\n=========\nPress any key to make payment...", CurrOrder.OrderNo, CurrOrder.GetTicketList()[0].Screening.Movie.Title, CurrOrder.GetTicketList()[0].Screening.CinemaHall.Name, CurrOrder.GetTicketList()[0].Screening.CinemaHall.HallNo, CurrOrder.GetTicketList()[0].Screening.ScreeningDateTime, CurrOrder.Amount);
+                Console.ReadLine();
+                Console.WriteLine("Thank you for visiting Singa Cineplexes. Have a great movie!");
                 break;
             }
         }
 
-        static void SeniorTicket(List<Ticket> ticketList, Screening screening, int ticketno)
+        static void SeniorTicket(Order CurrOrder, Screening screening, int ticketno)
         {
             while (true)
             {
@@ -397,29 +402,29 @@ Enter your option:");
                 if (DateTime.Today.Year - YOB.Year < 55)
                 {
                     Console.WriteLine("Only ages 55 and above are considered Elderly\nYou'll be considered as an Adult");
-                    AdultTicket(ticketList, screening, ticketno);
+                    AdultTicket(CurrOrder, screening, ticketno);
                     break;
                 }
-                ticketList.Add(new SeniorCitizen(screening, YOB.Year));
+                CurrOrder.AddTicket(new SeniorCitizen(screening, YOB.Year));
                 Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
                 break;
             }
         }
 
-        static void StudentTicket(List<Ticket> ticketList, Screening screening, int ticketno)
+        static void StudentTicket(Order CurrOrder, Screening screening, int ticketno)
         {
             while (true)
             {
                 Console.Write("Please enter the level of study[Primary/Secondary/Teriary]: ");
                 string levelofStudy = Console.ReadLine();
                 if (!new List<string>() { "Primary", "Secondary", "Teriary"}.Contains(levelofStudy)) { Console.WriteLine("Invalid level of study"); continue; }
-                ticketList.Add(new Student(screening, levelofStudy));
+                CurrOrder.AddTicket(new Student(screening, levelofStudy));
                 Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
                 break;
             }
         }
 
-        static void AdultTicket(List<Ticket> ticketList, Screening screening, int ticketno)
+        static void AdultTicket(Order CurrOrder, Screening screening, int ticketno)
         {
             while (true)
             {
@@ -428,7 +433,7 @@ Enter your option:");
                 string userinput = Console.ReadLine();
                 if ( userinput == "Y") { buyPopcorn = true; }
                 else if (userinput != "N") { Console.WriteLine("Invalid input"); continue; }
-                ticketList.Add(new Adult(screening, buyPopcorn));
+                CurrOrder.AddTicket(new Adult(screening, buyPopcorn));
                 Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
                 break;
             }

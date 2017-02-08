@@ -39,6 +39,7 @@ namespace Movie_Ticketing_System
                     return 8.50;
                 }
             }
+            //More than 7 days since start of movie
             else
             {
                 if (Screening.ScreeningType == "3D")
