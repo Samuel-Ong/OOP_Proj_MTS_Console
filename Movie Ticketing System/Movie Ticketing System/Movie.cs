@@ -11,11 +11,19 @@ namespace Movie_Ticketing_System
 {
     class Movie
     {
+        private double rating;
+
         public string Title { get; set; }
         public int Duration { get; set; }
         public string Classification { get; set; }
         public DateTime OpeningDate { get; set; }
         public List<string> GenreList { get; set; } = new List<string>();
+        public double Rating
+        {
+            get { return Math.Round(rating,2); }
+            set { rating = value; }
+        }
+        public List<string> CommentList { get; set; } = new List<string>();
 
         public Movie() { }
         public Movie(string title, int duration, string classification, DateTime openingdate, List<string> genrelist)

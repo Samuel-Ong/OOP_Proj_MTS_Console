@@ -1,6 +1,8 @@
-﻿//Student Number : S10171663,  s10171069
+﻿//=======================================
+//Student Number : S10171663,  s10171069
 //Student name   : Samuel Ong, Seow Chong
 //Module Group   : IT05
+//=======================================
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,9 +43,6 @@ namespace Movie_Ticketing_System
             };
 
             List<Order> orderList = new List<Order>();
-
-            List<List<string>> movieCommentList = new List<List<string>>() { new List<string>(), new List<string>(), new List<string>(), new List<string>() };
-            List<double> movieRatingList = new List<double>() { 0, 0, 0, 0};
             while (true)
             {
                 Menu();
@@ -70,10 +69,10 @@ namespace Movie_Ticketing_System
                             OrderTicket(movieList, screeningList);
                         break;
                     case 6:
-                        AddMovieRating(movieList, movieCommentList, movieRatingList);
+                        AddMovieRating(movieList);
                         break;
                     case 7:
-                        ViewRatingComment(movieList, movieCommentList, movieRatingList);
+                        ViewRatingComment(movieList);
                         break;
                     case 0:
                         return;
@@ -435,7 +434,7 @@ Enter your option:");
             }
         }
 
-        static void AddMovieRating(List<Movie> movieList, List<List<string>> movieCommentList, List<double> movieRatingList)
+        static void AddMovieRating(List<Movie> movieList)
         {
             while (true)
             {
@@ -454,7 +453,7 @@ Enter your option:");
                     Console.WriteLine("Invalid Movie");
                     continue;
                 }
-
+                Console.WriteLine("The current rating for {0} is {1}", movieList[movieNo].Title, movieList[movieNo].Rating);
                 Console.Write("\nPlease enter a rating [0=Very bad; 5=Very good]: ");
                 try { rating = Convert.ToInt32(Console.ReadLine()); }
                 catch (Exception e)
@@ -468,14 +467,15 @@ Enter your option:");
                     continue;
                 }
                 Console.Write("Please enter comments about the movie: ");
-                movieRatingList[movieNo] = (movieRatingList[movieNo] * movieCommentList[movieNo].Count() + rating) / (movieCommentList[movieNo].Count() + 1);
-                movieCommentList[movieNo].Add(Console.ReadLine());
+                movieList[movieNo].Rating = (movieList[movieNo].Rating * movieList[movieNo].CommentList.Count() + rating) / (movieList[movieNo].CommentList.Count() + 1);
+                movieList[movieNo].CommentList.Add(Console.ReadLine());
                 Console.WriteLine("\nThank you for your submission");
+                Console.WriteLine("The new rating for the movie is {0}", movieList[movieNo].Rating);
                 break;
             }
         }
         
-        static void ViewRatingComment(List<Movie> movieList, List<List<string>> movieCommentList, List<double> movieRatingList)
+        static void ViewRatingComment(List<Movie> movieList)
         {
             while (true)
             {
@@ -495,10 +495,10 @@ Enter your option:");
                     Console.WriteLine("Invalid Movie");
                     continue;
                 }
-                Console.WriteLine("The rating for {0} is {1}", movieList[movieNo].Title, movieRatingList[movieNo]);
-                for (int i = 0; i < movieCommentList[movieNo].Count; i++)
+                Console.WriteLine("The rating for {0} is {1}", movieList[movieNo].Title, movieList[movieNo].Rating);
+                for (int i = 0; i < movieList[movieNo].CommentList.Count; i++)
                 {
-                    Console.WriteLine("Comment #{0} : {1}", i + 1, movieCommentList[movieNo][i]);
+                    Console.WriteLine("Comment #{0} : {1}", i + 1, movieList[movieNo].CommentList[i]);
                 }
                 Console.WriteLine();
                 break;
