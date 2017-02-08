@@ -74,6 +74,9 @@ namespace Movie_Ticketing_System
                     case 7:
                         ViewRatingComment(movieList);
                         break;
+                    case 8:
+                        MovieRecommendation(movieList);
+                        break;
                     case 0:
                         return;
                     default:
@@ -503,6 +506,16 @@ Enter your option:");
                 Console.WriteLine();
                 break;
             }
+        }
+
+        static void MovieRecommendation(List<Movie> movieList)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Hottest Movie\n=============\n");
+            Movie MaxRating = movieList.IndexOf(Max(o => o.Rating));
+            movieList
+            Console.WriteLine("{1,-30}{2,-10}{3,-20}{4,-16}{5}", "Title", "Duration", "Genre", "Classification", "Opening Date");
+            Console.WriteLine("{1,-30}{2,-10}{3,-20}{4,-16}{5}", movieList[].Title)
         }
     }
 }
