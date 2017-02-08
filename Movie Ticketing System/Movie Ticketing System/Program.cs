@@ -517,10 +517,9 @@ Enter your option:");
         {
             Console.WriteLine();
             Console.WriteLine("Hottest Movie\n=============\n");
-            Movie MaxRating = movieList.IndexOf(Max(o => o.Rating));
-            movieList
-            Console.WriteLine("{1,-30}{2,-10}{3,-20}{4,-16}{5}", "Title", "Duration", "Genre", "Classification", "Opening Date");
-            Console.WriteLine("{1,-30}{2,-10}{3,-20}{4,-16}{5}", movieList[].Title)
+            Movie maxMovieRating = movieList.First(x => x.Rating == movieList.Max(i => i.Rating));
+            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}", "Title", "Duration", "Genre", "Classification", "Opening Date");
+            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}\n", maxMovieRating.Title, maxMovieRating.Duration, maxMovieRating.GetGenre(), maxMovieRating.Classification, maxMovieRating.OpeningDate);
         }
     }
 }
