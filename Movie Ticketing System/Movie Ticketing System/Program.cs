@@ -512,10 +512,12 @@ Enter your option:");
         {
             Console.WriteLine();
             Console.WriteLine("Hottest Movie\n=============\n");
-            Movie MaxRating = movieList.IndexOf(Max(o => o.Rating));
-            movieList
-            Console.WriteLine("{1,-30}{2,-10}{3,-20}{4,-16}{5}", "Title", "Duration", "Genre", "Classification", "Opening Date");
-            Console.WriteLine("{1,-30}{2,-10}{3,-20}{4,-16}{5}", movieList[].Title)
+                
+            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}", "Title", "Duration", "Genre", "Classification", "Opening Date");
+            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}", movieList[].Title, movieList[].Duration, movieList[].GenreList[], movieList[].Classification, movieList[].OpeningDate);
+            Console.WriteLine("The rating for {0} is {1}", movieList[].Title, movieList[].Rating);
+            Console.Write("Do you want to order tickets for this movie[Y/N]: ");
+            string 
         }
     }
 }
