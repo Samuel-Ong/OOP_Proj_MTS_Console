@@ -41,11 +41,6 @@ namespace Movie_Ticketing_System
                 new Screening(new DateTime(2017, 01, 31, 19, 00, 00), "3D", cinemaHallList[0], movieList[3]),
                 new Screening(new DateTime(2017, 02, 02, 15, 00, 00), "2D", cinemaHallList[1], movieList[3])
             };
-            List<string> screennoList = new List<string>();
-            foreach (Screening s in screeningList)
-            {
-                screennoList.Add(s.ScreeningNo);
-            }
 
             List<Order> orderList = new List<Order>();
             while (true)
@@ -62,13 +57,13 @@ namespace Movie_Ticketing_System
                         Console.WriteLine();
                         break;
                     case 2:
-                        AddMovieScreening(movieList, screeningList, cinemaHallList, screennoList);
+                        AddMovieScreening(movieList, screeningList, cinemaHallList);
                         break;
                     case 3:
                         ListMovieScreenings(movieList, screeningList);
                         break;
                     case 4:
-                        DeleteMovieScreening(movieList, screeningList, screennoList);
+                        DeleteMovieScreening(movieList, screeningList);
                         break;
                     case 5:
                         OrderTicket(movieList, screeningList, orderList);
@@ -145,7 +140,7 @@ Enter your option:");
             }
         }
 
-        static void AddMovieScreening(List<Movie> movieList, List<Screening> screeningList, List<CinemaHall> cinemaHallList, List<string> screennoList)
+        static void AddMovieScreening(List<Movie> movieList, List<Screening> screeningList, List<CinemaHall> cinemaHallList)
         {
             while (true)
             {
@@ -199,7 +194,6 @@ Enter your option:");
 
                 Screening s = new Screening(Sdatetime, Type, cinemaHallList[cinemahallindex], movieList[movieindex]);
                 screeningList.Add(s);
-                screennoList.Add(s.ScreeningNo);
                 Console.WriteLine("Movie screening successfully created.");
                 break;
             }
@@ -245,8 +239,9 @@ Enter your option:");
             }
         }
 
-        static void DeleteMovieScreening(List<Movie> movieList, List<Screening> screeningList, List<string> screennoList)
+        static void DeleteMovieScreening(List<Movie> movieList, List<Screening> screeningList)
         {
+            List<string> screennoList = new List<string>();
             while (true)
             {
                 Console.WriteLine("\nOption4.Delete Movie Screening\n");
@@ -268,7 +263,7 @@ Enter your option:");
                 }
                 if (screennoList.Contains(screenno))
                 {
-                    screeningList.RemoveAt(screennoList.IndexOf(screenno));
+                    screeningList.Remove(screeningList.First(x => x.ScreeningNo == screenno));
                     Console.WriteLine("Screening Deleted");
                 }
                 else
