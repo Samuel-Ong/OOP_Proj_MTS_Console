@@ -1,7 +1,7 @@
 ﻿//=======================================
 //Student Number : S10171663,  s10171069
-//Student name   : Samuel Ong, Seow Chong
-//Module Group   : IT05
+//Student Name   : Samuel Ong, Lim Seow Chong
+//Module  Group  : IT05
 //=======================================
 using System;
 using System.Collections.Generic;
