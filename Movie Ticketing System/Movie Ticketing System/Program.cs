@@ -373,7 +373,10 @@ Enter your option:");
                         }
                         else if (cat == "Student")
                         {
-                            StudentTicket(CurrOrder, screening, i + 1);
+                            if (!StudentTicket(CurrOrder, screening, i + 1))
+                            {
+                                continue;
+                            }
                         }
                         else if (cat == "Adult")
                         {
@@ -386,7 +389,7 @@ Enter your option:");
                 }
                 Console.Write("Order #{0}\n=========\nMovie Title: {1}\nCinema: {2}\nHall: {3}\nDate/Time: {4}\n\nTotal: ${5:0.00}\n=========\nPress any key to make payment...", CurrOrder.OrderNo, CurrOrder.GetTicketList()[0].Screening.Movie.Title, CurrOrder.GetTicketList()[0].Screening.CinemaHall.Name, CurrOrder.GetTicketList()[0].Screening.CinemaHall.HallNo, CurrOrder.GetTicketList()[0].Screening.ScreeningDateTime, CurrOrder.Amount);
                 Console.ReadLine();
-                Console.WriteLine("Thank you for visiting Singa Cineplexes. Have a great movie!");
+                Console.WriteLine("Thank you for visiting Singa Cineplexes. Have a great movie!\n");
                 break;
             }
         }
@@ -415,16 +418,32 @@ Enter your option:");
             }
         }
 
-        static void StudentTicket(Order CurrOrder, Screening screening, int ticketno)
+        static bool StudentTicket(Order CurrOrder, Screening screening, int ticketno)
         {
             while (true)
             {
                 Console.Write("Please enter the level of study[Primary/Secondary/Teriary]: ");
                 string levelofStudy = Console.ReadLine();
                 if (!new List<string>() { "Primary", "Secondary", "Teriary"}.Contains(levelofStudy)) { Console.WriteLine("Invalid level of study"); continue; }
+                if (screening.Movie.Classification == "R21")
+                {
+                    Console.WriteLine("Ticket holder does not meet age requirement of 21 years old and above\n");
+                    return false;
+                }
+                else if ((screening.Movie.Classification == "NC16"|| screening.Movie.Classification == "M18") && levelofStudy != "Teriary")
+                {
+                    Console.WriteLine("Ticket holder does not meet age requirement of 16 years old and above\n");
+                    return false;
+                }
+                else if (screening.Movie.Classification == "PG13" && levelofStudy == "Primary" )
+                {
+                    Console.WriteLine("Ticket holder does not meet age requirement of 13 years old and above\n");
+                    return false;
+                }
+                              
                 CurrOrder.AddTicket(new Student(screening, levelofStudy));
                 Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
-                break;
+                return true;
             }
         }
 
