@@ -71,7 +71,7 @@ namespace Movie_Ticketing_System
                         DeleteMovieScreening(movieList, screeningList, screennoList);
                         break;
                     case 5:
-                        OrderTicket(movieList, screeningList, orderList, screennoList);
+                        OrderTicket(movieList, screeningList, orderList);
                         break;
                     case 6:
                         AddMovieRating(movieList);
@@ -281,7 +281,7 @@ Enter your option:");
             }
         }
 
-        static void OrderTicket(List<Movie> movieList, List<Screening> screeningList, List<Order> orderList, List<string> screennoList)
+        static void OrderTicket(List<Movie> movieList, List<Screening> screeningList, List<Order> orderList)
         {
             while (true)
             {
@@ -307,6 +307,7 @@ Enter your option:");
                 //Screening
                 Console.WriteLine("\n{0,-15}{1,-6}{2,-25}{3}", "Location", "Type", "Date/Time", "Seats Remaining");
                 bool found = false;
+                List<string> screennoList = new List<string>();
                 foreach (Screening s in screeningList)
                 {
                     if (s.Movie.Title == movieList[movieChosen].Title)
@@ -314,6 +315,7 @@ Enter your option:");
                         if (s.SeatsRemaining > 0)
                         {
                             Console.WriteLine("{0,-7}{1,-15}{2,-6}{3,-25}{4}", s.ScreeningNo, s.CinemaHall.Name, s.ScreeningType, s.ScreeningDateTime.ToString("dd-MMM-yy hh:mm:ss tt", CultureInfo.InvariantCulture), s.SeatsRemaining);
+                            screennoList.Add(s.ScreeningNo);
                             found = true;
                         }
                     }
@@ -326,17 +328,12 @@ Enter your option:");
                 Console.Write("Select a session: ");
                 string screenno = Console.ReadLine();
                 int temp;
-                if (!int.TryParse(screenno, out temp))
-                {
-                    Console.WriteLine("Invalid Session");
-                    continue;
-                }
                 if (!screennoList.Contains(screenno))
                 {
                     Console.WriteLine("Invalid Screening");
                     continue;
                 }
-                else { screening = screeningList[screennoList.IndexOf(screenno)]; }
+                else { screening = screeningList.First(x => x.ScreeningNo == screenno); }
 
                 //Ticket
                 Console.Write("Please enter number of tickets you wish to purchase: ");
