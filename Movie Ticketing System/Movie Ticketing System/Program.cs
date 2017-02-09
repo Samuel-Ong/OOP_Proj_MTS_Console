@@ -346,18 +346,21 @@ Enter your option:");
                     Console.WriteLine("Invalid input");
                     continue;
                 }
-                Console.Write("The movie classification is " + movieList[movieChosen].Classification + ". Does every ticket holder meet the age requirements [Y/N]? ");
-                string requirements = Console.ReadLine();
-                if (requirements != "Y" && requirements != "N")
+                if (movieList[movieChosen].Classification != "G")
                 {
-                    Console.WriteLine("Invalid Response");
-                    continue;
-                }
-                if (requirements == "N")
-                {
-                    Console.WriteLine("Unable to order tickets from this movie. Try another movie.");
-                    continue;
-                }
+                    Console.Write("The movie classification is " + movieList[movieChosen].Classification + ". Does every ticket holder meet the age requirements [Y/N]? ");
+                    string requirements = Console.ReadLine();
+                    if (requirements != "Y" && requirements != "N")
+                    {
+                        Console.WriteLine("Invalid Response");
+                        continue;
+                    }
+                    if (requirements == "N")
+                    {
+                        Console.WriteLine("Unable to order tickets from this movie. Try another movie.");
+                        continue;
+                    }
+                }                
 
                 Order CurrOrder = new Order();
                 for (int i = 0; i < noticket; i++)
@@ -389,6 +392,8 @@ Enter your option:");
                 }
                 Console.Write("Order #{0}\n=========\nMovie Title: {1}\nCinema: {2}\nHall: {3}\nDate/Time: {4}\n\nTotal: ${5:0.00}\n=========\nPress any key to make payment...", CurrOrder.OrderNo, CurrOrder.GetTicketList()[0].Screening.Movie.Title, CurrOrder.GetTicketList()[0].Screening.CinemaHall.Name, CurrOrder.GetTicketList()[0].Screening.CinemaHall.HallNo, CurrOrder.GetTicketList()[0].Screening.ScreeningDateTime, CurrOrder.Amount);
                 Console.ReadLine();
+                screening.SeatsRemaining -= CurrOrder.GetTicketList().Count();
+                CurrOrder.Status = "Paid";
                 Console.WriteLine("Thank you for visiting Singa Cineplexes. Have a great movie!\n");
                 break;
             }
