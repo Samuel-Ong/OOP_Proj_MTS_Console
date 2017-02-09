@@ -62,7 +62,7 @@ namespace Movie_Ticketing_System
                         Console.WriteLine();
                         break;
                     case 2:
-                        AddMovieScreening(movieList, screeningList, cinemaHallList);
+                        AddMovieScreening(movieList, screeningList, cinemaHallList, screennoList);
                         break;
                     case 3:
                         ListMovieScreenings(movieList, screeningList);
@@ -145,7 +145,7 @@ Enter your option:");
             }
         }
 
-        static void AddMovieScreening(List<Movie> movieList, List<Screening> screeningList, List<CinemaHall> cinemaHallList)
+        static void AddMovieScreening(List<Movie> movieList, List<Screening> screeningList, List<CinemaHall> cinemaHallList, List<string> screennoList)
         {
             while (true)
             {
@@ -199,6 +199,7 @@ Enter your option:");
 
                 Screening s = new Screening(Sdatetime, Type, cinemaHallList[cinemahallindex], movieList[movieindex]);
                 screeningList.Add(s);
+                screennoList.Add(s.ScreeningNo);
                 Console.WriteLine("Movie screening successfully created.");
                 break;
             }
@@ -516,10 +517,14 @@ Enter your option:");
         static void MovieRecommendation(List<Movie> movieList)
         {
             Console.WriteLine();
-            Console.WriteLine("Hottest Movie\n=============\n");
+            Console.WriteLine("Hottest Movie\n==================");
             Movie maxMovieRating = movieList.First(x => x.Rating == movieList.Max(i => i.Rating));
-            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}", "Title", "Duration", "Genre", "Classification", "Opening Date");
-            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}\n", maxMovieRating.Title, maxMovieRating.Duration, maxMovieRating.GetGenre(), maxMovieRating.Classification, maxMovieRating.OpeningDate);
+            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}\n", "Title", "Duration", "Genre", "Classification", "Opening Date");
+            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}\n", maxMovieRating.Title, maxMovieRating.Duration, maxMovieRating.GetGenre(), maxMovieRating.Classification, maxMovieRating.OpeningDate.ToString("dd-MMM-yy", CultureInfo.InvariantCulture));
+            Console.WriteLine("Most Popular Movie\n==================");
+            Movie popularMovie = movieList.First(x => x.CommentList.Count() == movieList.Max(i => i.CommentList.Count()));
+            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}\n", "Title", "Duration", "Genre", "Classification", "Opening Date");
+            Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4}\n", popularMovie.Title, popularMovie.Duration, popularMovie.GetGenre(), popularMovie.Classification, popularMovie.OpeningDate.ToString("dd-MMM-yy",CultureInfo.InvariantCulture));
         }
     }
 }
