@@ -20,7 +20,7 @@ namespace Movie_Ticketing_System
         public List<string> GenreList { get; set; } = new List<string>();
         public double Rating
         {
-            get { return Math.Round(rating,2); }
+            get { return Math.Round(rating, 2); }
             set { rating = value; }
         }
         public List<string> CommentList { get; set; } = new List<string>();
@@ -34,14 +34,20 @@ namespace Movie_Ticketing_System
             OpeningDate = openingdate;
             GenreList = genrelist;
         }
-        public override string ToString()
+
+        public string GetGenre()
         {
             string genrelist = GenreList[0];
             for (int i = 1; i < GenreList.Count; i++)
             {
                 genrelist += ", " + GenreList[i];
             }
-            return String.Format("{0,-35}{1,-9}{2,-20}{3,-14}{4}{5}", Title, Duration, Classification, OpeningDate, genrelist);
+            return genrelist;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0,-35}{1,-9}{2,-20}{3,-14}{4}{5}", Title, Duration, Classification, OpeningDate, GetGenre());
         }
     }
 }
