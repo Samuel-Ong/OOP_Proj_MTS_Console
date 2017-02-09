@@ -354,7 +354,7 @@ Enter your option:");
                     }
                 }                
 
-                Order CurrOrder = new Order();
+                Order CurrentOrder = new Order();
                 for (int i = 0; i < noticket; i++)
                 {
                     while (true)
@@ -364,34 +364,34 @@ Enter your option:");
                         string cat = Console.ReadLine();
                         if (cat == "Senior")
                         {
-                            SeniorTicket(CurrOrder, screening, i + 1);
+                            SeniorTicket(CurrentOrder, screening, i + 1);
                         }
                         else if (cat == "Student")
                         {
-                            if (!StudentTicket(CurrOrder, screening, i + 1))
+                            if (!StudentTicket(CurrentOrder, screening, i + 1))
                             {
                                 continue;
                             }
                         }
                         else if (cat == "Adult")
                         {
-                            AdultTicket(CurrOrder, screening, i + 1);
+                            AdultTicket(CurrentOrder, screening, i + 1);
                         }
                         else { Console.WriteLine("Invalid option"); continue; }
                         Console.WriteLine();
                         break;
                     }
                 }
-                Console.Write("Order #{0}\n=========\nMovie Title: {1}\nCinema: {2}\nHall: {3}\nDate/Time: {4}\n\nTotal: ${5:0.00}\n=========\nPress any key to make payment...", CurrOrder.OrderNo, CurrOrder.GetTicketList()[0].Screening.Movie.Title, CurrOrder.GetTicketList()[0].Screening.CinemaHall.Name, CurrOrder.GetTicketList()[0].Screening.CinemaHall.HallNo, CurrOrder.GetTicketList()[0].Screening.ScreeningDateTime, CurrOrder.Amount);
+                Console.Write("Order #{0}\n=========\nMovie Title: {1}\nCinema: {2}\nHall: {3}\nDate/Time: {4}\n\nTotal: ${5:0.00}\n=========\nPress any key to make payment...", CurrentOrder.OrderNo, CurrentOrder.GetTicketList()[0].Screening.Movie.Title, CurrentOrder.GetTicketList()[0].Screening.CinemaHall.Name, CurrentOrder.GetTicketList()[0].Screening.CinemaHall.HallNo, CurrentOrder.GetTicketList()[0].Screening.ScreeningDateTime, CurrentOrder.Amount);
                 Console.ReadLine();
-                screening.SeatsRemaining -= CurrOrder.GetTicketList().Count();
-                CurrOrder.Status = "Paid";
+                screening.SeatsRemaining -= CurrentOrder.GetTicketList().Count();
+                CurrentOrder.Status = "Paid";
                 Console.WriteLine("Thank you for visiting Singa Cineplexes. Have a great movie!\n");
                 break;
             }
         }
 
-        static void SeniorTicket(Order CurrOrder, Screening screening, int ticketno)
+        static void SeniorTicket(Order CurrentOrder, Screening screening, int ticketno)
         {
             while (true)
             {
@@ -410,16 +410,16 @@ Enter your option:");
                 if (DateTime.Today.Year - YOB.Year < 55)
                 {
                     Console.WriteLine("Only ages 55 and above are considered Elderly\nYou'll be considered as an Adult");
-                    AdultTicket(CurrOrder, screening, ticketno);
+                    AdultTicket(CurrentOrder, screening, ticketno);
                     break;
                 }
-                CurrOrder.AddTicket(new SeniorCitizen(screening, YOB.Year));
+                CurrentOrder.AddTicket(new SeniorCitizen(screening, YOB.Year));
                 Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
                 break;
             }
         }
 
-        static bool StudentTicket(Order CurrOrder, Screening screening, int ticketno)
+        static bool StudentTicket(Order CurrentOrder, Screening screening, int ticketno)
         {
             while (true)
             {
@@ -442,13 +442,13 @@ Enter your option:");
                     return false;
                 }
                               
-                CurrOrder.AddTicket(new Student(screening, levelofStudy));
+                CurrentOrder.AddTicket(new Student(screening, levelofStudy));
                 Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
                 return true;
             }
         }
 
-        static void AdultTicket(Order CurrOrder, Screening screening, int ticketno)
+        static void AdultTicket(Order CurrentOrder, Screening screening, int ticketno)
         {
             while (true)
             {
@@ -457,7 +457,7 @@ Enter your option:");
                 string userinput = Console.ReadLine();
                 if ( userinput == "Y") { buyPopcorn = true; }
                 else if (userinput != "N") { Console.WriteLine("Invalid input"); continue; }
-                CurrOrder.AddTicket(new Adult(screening, buyPopcorn));
+                CurrentOrder.AddTicket(new Adult(screening, buyPopcorn));
                 Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
                 break;
             }
