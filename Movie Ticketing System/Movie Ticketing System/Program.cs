@@ -16,6 +16,7 @@ namespace Movie_Ticketing_System
     {
         static void Main(string[] args)
         {
+            //Creation and Insertion Of Cinema Halls to cinemaHallList
             List<CinemaHall> cinemaHallList = new List<CinemaHall>()
             {
                 new CinemaHall("Singa North", 1, 30),
@@ -26,6 +27,7 @@ namespace Movie_Ticketing_System
                 new CinemaHall("Singa Central", 2, 15)
             };
 
+            //Creation and Insertion Of Movies to movieList
             List<Movie> movieList = new List<Movie>()
             {
                 new Movie("The Great Wall", 103, "NC16", new DateTime(2016, 12, 29), new List<string>() { "Action", "Adventure" }),
@@ -34,6 +36,7 @@ namespace Movie_Ticketing_System
                 new Movie("Power Rangers", 120, "G", new DateTime(2017, 01, 31), new List<string>() { "Fantasy", "Thriller" })
             };
 
+            //Creation and Insertion Of Screenings to screeningList
             List<Screening> screeningList = new List<Screening>()
             {
                 new Screening(new DateTime(2016, 12, 29, 15, 00, 00), "3D", cinemaHallList[2], movieList[0]),
@@ -43,10 +46,13 @@ namespace Movie_Ticketing_System
             };
 
             List<Order> orderList = new List<Order>();
+
+            //Main Program
             while (true)
             {
                 Menu();
                 int option;
+                //Options that users choose that has different purposes
                 try { option = Convert.ToInt32(Console.ReadLine()); }
                 catch (Exception e) { Console.WriteLine("Invalid input"); continue; }
                 switch (option)
@@ -87,7 +93,7 @@ namespace Movie_Ticketing_System
         }
 
 
-
+        //Method to print option Menu
         static void Menu()
         {
             Console.Write(@"      Movie Ticketing System
@@ -105,23 +111,18 @@ namespace Movie_Ticketing_System
 Enter your option:");
         }
 
-
+        //Display of list of all Movies
         static void DisplayAllMovies(List<Movie> movieList)
         {
             Console.WriteLine("{0,-4}{1,-30}{2,-10}{3,-20}{4,-16}{5}", "No", "Title", "Duration", "Genre", "Classification", "Opening Date");
             string moviegenre;
             for (int i = 0; i < movieList.Count; i++)
             {
-                moviegenre = movieList[i].GenreList[0];
-                for (int ii = 1; ii < movieList[i].GenreList.Count; ii++)
-                {
-                    moviegenre += ", " + movieList[i].GenreList[ii];
-                }
-                Console.WriteLine("{0,-4}{1,-30}{2,-10}{3,-20}{4,-16}{5}", i + 1, movieList[i].Title, movieList[i].Duration, moviegenre, movieList[i].Classification, movieList[i].OpeningDate.ToString("dd-MMM-yy", CultureInfo.InvariantCulture));
+                Console.WriteLine("{0,-4}{1,-30}{2,-10}{3,-20}{4,-16}{5}", i + 1, movieList[i].Title, movieList[i].Duration, movieList[i].GetGenre(), movieList[i].Classification, movieList[i].OpeningDate.ToString("dd-MMM-yy", CultureInfo.InvariantCulture));
             }
         }
 
-
+        //Display of list of all Cinema Halls
         static void DisplayAllCinemaHall(List<CinemaHall> cinemaHallList)
         {
             Console.WriteLine("{0,-3}{1,-14}{2,-9}{3}", "No", "Cinema Name", "HallNo", "Capacity");
@@ -131,6 +132,7 @@ Enter your option:");
             }
         }
 
+        //Printing of list of all Screenings
         static void DisplayScreenings(List<Screening> screeningList)
         {
             Console.WriteLine("{0,-6}{1,-15}{2,-10}{3,-30}{4}", "No", "Location", "Hall No", "Title", "Date/Time");
@@ -140,6 +142,7 @@ Enter your option:");
             }
         }
 
+        //Method to add Movie Screenings into the existing screening list
         static void AddMovieScreening(List<Movie> movieList, List<Screening> screeningList, List<CinemaHall> cinemaHallList)
         {
             while (true)
@@ -199,6 +202,7 @@ Enter your option:");
             }
         }
 
+        //Displaying of all Movie and the chosen Movie's Screening details
         static void ListMovieScreenings(List<Movie> movieList, List<Screening> screeningList)
         {
             while (true)
@@ -239,6 +243,7 @@ Enter your option:");
             }
         }
 
+        //Deletion of Movie Screening from the list of movie screenings via the screening number
         static void DeleteMovieScreening(List<Movie> movieList, List<Screening> screeningList)
         {
             List<string> screennoList = new List<string>();
@@ -276,6 +281,7 @@ Enter your option:");
             }
         }
 
+        //Ordering of ticket
         static void OrderTicket(List<Movie> movieList, List<Screening> screeningList, List<Order> orderList)
         {
             while (true)
@@ -359,6 +365,7 @@ Enter your option:");
                     }
                 }                
 
+                //Addition of order into the order list
                 Order CurrentOrder = new Order();
                 for (int i = 0; i < noticket; i++)
                 {
@@ -387,6 +394,8 @@ Enter your option:");
                         break;
                     }
                 }
+
+                //Display of Details of tickets bought such as movie title, cinema, hall number, date and time and total price of order
                 Console.Write("Order #{0}\n=========\nMovie Title: {1}\nCinema: {2}\nHall: {3}\nDate/Time: {4}\n\nTotal: ${5:0.00}\n=========\nPress any key to make payment...", CurrentOrder.OrderNo, CurrentOrder.GetTicketList()[0].Screening.Movie.Title, CurrentOrder.GetTicketList()[0].Screening.CinemaHall.Name, CurrentOrder.GetTicketList()[0].Screening.CinemaHall.HallNo, CurrentOrder.GetTicketList()[0].Screening.ScreeningDateTime, CurrentOrder.Amount);
                 Console.ReadLine();
                 //Sets remaining seats of the screening.
@@ -397,6 +406,7 @@ Enter your option:");
             }
         }
 
+        //Method if Ticket category is Senior
         static void SeniorTicket(Order CurrentOrder, Screening screening, int ticketno)
         {
             while (true)
@@ -426,6 +436,7 @@ Enter your option:");
             }
         }
 
+        //Method if Ticket category is Student
         static bool StudentTicket(Order CurrentOrder, Screening screening, int ticketno)
         {
             while (true)
@@ -456,6 +467,7 @@ Enter your option:");
             }
         }
 
+        //Method if Ticket category is Adult
         static void AdultTicket(Order CurrentOrder, Screening screening, int ticketno)
         {
             while (true)
