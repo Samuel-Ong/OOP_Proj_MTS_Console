@@ -13,7 +13,7 @@ namespace Movie_Ticketing_System
 {
     class Order
     {
-        private int orderCount { get; set; } = 1;
+        private static int orderCount { get; set; } = 1;
         private string status = "Unpaid";
         public string OrderNo { get; set; }
         public DateTime OrderDateTime { get; set; } = DateTime.Today;
