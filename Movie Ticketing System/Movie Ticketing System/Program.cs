@@ -411,6 +411,10 @@ Enter your option:");
                     Console.WriteLine("Invalid Year Of Birth");
                     continue;
                 }
+                if (YOB.Year > DateTime.Today.Year)
+                {
+                    Console.WriteLine("Invalid Year Of Birth");
+                }
                 if (DateTime.Today.Year - YOB.Year < 55)
                 {
                     Console.WriteLine("Only ages 55 and above are considered Elderly\nYou'll be considered as an Adult");
