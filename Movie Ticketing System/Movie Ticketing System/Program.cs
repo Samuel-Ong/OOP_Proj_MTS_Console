@@ -401,6 +401,7 @@ Enter your option:");
                 //Sets remaining seats of the screening.
                 screening.SeatsRemaining -= CurrentOrder.GetTicketList().Count();
                 CurrentOrder.Status = "Paid";
+                CurrentOrder.OrderDateTime = DateTime.Today();
                 Console.WriteLine("Thank you for visiting Singa Cineplexes. Have a great movie!\n");
                 break;
             }
