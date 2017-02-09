@@ -23,8 +23,10 @@ namespace Movie_Ticketing_System
         public override double CalculatePrice()
         {
             double totalprice = 0.0;
+            //Pricing for the 3D movie
             if (Screening.ScreeningType == "3D")
             {
+                //Pricing for the Days Friday - Sunday
                 if (new List<DayOfWeek>() { DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday }.Contains(Screening.ScreeningDateTime.DayOfWeek))
                 {
                     totalprice = 14.00;
@@ -32,6 +34,7 @@ namespace Movie_Ticketing_System
                 totalprice = 11.00;
             }
             else
+            //Pricing for the 2D movies
             {
                 if (new List<DayOfWeek>() { DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday }.Contains(Screening.ScreeningDateTime.DayOfWeek))
                 {
@@ -39,6 +42,7 @@ namespace Movie_Ticketing_System
                 }
                 totalprice = 8.50;
             }
+            //Adding of Price of Popcorn
             if (PopcornOffer)
                 totalprice += 3;
             return totalprice;

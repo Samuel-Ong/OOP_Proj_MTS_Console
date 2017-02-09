@@ -37,6 +37,7 @@ namespace Movie_Ticketing_System
             GenreList = genrelist;
         }
 
+        //Converting list of Genres into a string.
         public string GetGenre()
         {
             string genrelist = GenreList[0];

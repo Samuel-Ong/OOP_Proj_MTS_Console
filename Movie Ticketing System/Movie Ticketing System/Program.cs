@@ -338,6 +338,11 @@ Enter your option:");
                     Console.WriteLine("Invalid input");
                     continue;
                 }
+                if (noticket > screening.SeatsRemaining)
+                {
+                    Console.WriteLine("Not enough seats available... Only {0} seats are available.", screening.SeatsRemaining);
+                    continue;
+                }
                 if (movieList[movieChosen].Classification != "G")
                 {
                     Console.Write("The movie classification is " + movieList[movieChosen].Classification + ". Does every ticket holder meet the age requirements [Y/N]? ");
@@ -384,6 +389,7 @@ Enter your option:");
                 }
                 Console.Write("Order #{0}\n=========\nMovie Title: {1}\nCinema: {2}\nHall: {3}\nDate/Time: {4}\n\nTotal: ${5:0.00}\n=========\nPress any key to make payment...", CurrentOrder.OrderNo, CurrentOrder.GetTicketList()[0].Screening.Movie.Title, CurrentOrder.GetTicketList()[0].Screening.CinemaHall.Name, CurrentOrder.GetTicketList()[0].Screening.CinemaHall.HallNo, CurrentOrder.GetTicketList()[0].Screening.ScreeningDateTime, CurrentOrder.Amount);
                 Console.ReadLine();
+                //Sets remaining seats of the screening.
                 screening.SeatsRemaining -= CurrentOrder.GetTicketList().Count();
                 CurrentOrder.Status = "Paid";
                 Console.WriteLine("Thank you for visiting Singa Cineplexes. Have a great movie!\n");
@@ -397,6 +403,7 @@ Enter your option:");
             {
                 Console.Write("Please enter year of birth [YYYY]: ");
                 DateTime YOB;
+                //Validation for DOB.
                 try { YOB = DateTime.ParseExact(Console.ReadLine(), "yyyy", CultureInfo.InvariantCulture); }
                 catch (Exception e)
                 {
@@ -407,7 +414,7 @@ Enter your option:");
                 {
                     Console.WriteLine("Invalid Year Of Birth");
                 }
-                if (DateTime.Today.Year - YOB.Year < 55)
+                if (DateTime.Today.Year - YOB.Year < 55 )
                 {
                     Console.WriteLine("Only ages 55 and above are considered Elderly\nYou'll be considered as an Adult");
                     AdultTicket(CurrentOrder, screening, ticketno);
@@ -425,7 +432,9 @@ Enter your option:");
             {
                 Console.Write("Please enter the level of study[Primary/Secondary/Teriary]: ");
                 string levelofStudy = Console.ReadLine();
+                //Checks whether the user inputs "Primary", "Secondary", "Teriary".
                 if (!new List<string>() { "Primary", "Secondary", "Teriary"}.Contains(levelofStudy)) { Console.WriteLine("Invalid level of study"); continue; }
+                //Checks for age requirement
                 if (screening.Movie.Classification == "R21")
                 {
                     Console.WriteLine("Ticket holder does not meet age requirement of 21 years old and above\n");
@@ -441,7 +450,6 @@ Enter your option:");
                     Console.WriteLine("Ticket holder does not meet age requirement of 13 years old and above\n");
                     return false;
                 }
-                              
                 CurrentOrder.AddTicket(new Student(screening, levelofStudy));
                 Console.WriteLine("Ticket #{0} has been ordered successfully", ticketno);
                 return true;
@@ -497,6 +505,7 @@ Enter your option:");
                     continue;
                 }
                 Console.Write("Please enter comments about the movie: ");
+                //Formula for setting of movie rating -> (Number of comments * Average rating) + Rating
                 movieList[movieNo].Rating = (movieList[movieNo].Rating * movieList[movieNo].CommentList.Count() + rating) / (movieList[movieNo].CommentList.Count() + 1);
                 movieList[movieNo].CommentList.Add(Console.ReadLine());
                 Console.WriteLine("\nThank you for your submission");
@@ -535,14 +544,17 @@ Enter your option:");
             }
         }
 
+        //Recommends the most viewed movie and the movie with the highest rating
         static void MovieRecommendation(List<Movie> movieList)
         {
             Console.WriteLine();
             Console.WriteLine("Highest Rating Movie\n====================");
+            //Finds the first movie with the Highest rating.
             Movie maxMovieRating = movieList.First(x => x.Rating == movieList.Max(i => i.Rating));
             Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4,-15}{5}", "Title", "Duration", "Genre", "Classification", "Opening Date","Rating");
             Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4,-15}{5}\n", maxMovieRating.Title, maxMovieRating.Duration, maxMovieRating.GetGenre(), maxMovieRating.Classification, maxMovieRating.OpeningDate.ToString("dd-MMM-yy", CultureInfo.InvariantCulture), maxMovieRating.Rating);
             Console.WriteLine("Most Popular Movie\n==================");
+            //Finds the first movie with the Most comments
             Movie popularMovie = movieList.First(x => x.CommentList.Count() == movieList.Max(i => i.CommentList.Count()));
             Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4,-15}{5}", "Title", "Duration", "Genre", "Classification", "Opening Date", "Rating");
             Console.WriteLine("{0,-30}{1,-10}{2,-20}{3,-16}{4,-15}{5}\n", popularMovie.Title, popularMovie.Duration, popularMovie.GetGenre(), popularMovie.Classification, popularMovie.OpeningDate.ToString("dd-MMM-yy",CultureInfo.InvariantCulture), popularMovie.Rating);

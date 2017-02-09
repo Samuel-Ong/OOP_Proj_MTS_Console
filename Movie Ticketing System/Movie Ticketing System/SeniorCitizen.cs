@@ -22,16 +22,20 @@ namespace Movie_Ticketing_System
         }
         public override double CalculatePrice()
         {
+            //Check if Screening is 7 days before Movie opening
             if ((Screening.ScreeningDateTime - Screening.Movie.OpeningDate).TotalDays <= 7)
             {
+                //Pricing for the 3D screening
                 if (Screening.ScreeningType == "3D")
                 {
+                    //Pricing for the Days Friday - Sunday
                     if (new List<DayOfWeek>() { DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday }.Contains(Screening.ScreeningDateTime.DayOfWeek))
                     {
                         return 14.00;
                     }
                     return 11.00;
                 }
+                //Pricing for the 2D screening
                 else
                 {
                     if (new List<DayOfWeek>() { DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday }.Contains(Screening.ScreeningDateTime.DayOfWeek))
@@ -41,6 +45,7 @@ namespace Movie_Ticketing_System
                     return 8.50;
                 }
             }
+            //Screening more than 7 days after Movie opening
             else
             {
                 if (Screening.ScreeningType == "3D")
